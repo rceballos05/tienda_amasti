@@ -1,22 +1,21 @@
-<header class="py-4 bg-white shadow-sm">
-    <div class="container d-flex flex-column flex-lg-row align-items-center justify-content-between gap-3">
-        <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" href="/">
-            <span class="badge bg-primary rounded-3 fs-5">TP</span>
-            <div>
-                <span class="fw-bold text-dark">Tienda Papelería</span>
-                <small class="d-block text-muted">Creatividad y organización en un solo lugar</small>
+<header class="header-glass shadow-sm sticky-top">
+    <nav class="navbar navbar-expand-lg py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center text-decoration-none" href="/">
+                <span class="logo-pill me-2">MiLogo</span>
+                <span class="fw-semibold text-dark-emphasis">Papelería Creativa</span>
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                    aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <NavMenu CssClass="ms-auto align-items-lg-center" />
+                <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 mt-4 mt-lg-0 ms-lg-4">
+                    <NavLink class="btn btn-outline-primary rounded-pill px-4" href="/products">Catálogo</NavLink>
+                    <NavLink class="btn btn-primary rounded-pill px-4" href="/register">Crear cuenta</NavLink>
+                </div>
             </div>
-        </a>
-        <div class="d-flex align-items-center gap-2">
-            <NavLink class="btn btn-outline-primary rounded-pill" href="/products">Catálogo</NavLink>
-            <AuthorizeView>
-                <Authorized>
-                    <NavLink class="btn btn-primary rounded-pill" href="/dashboard">Mi espacio</NavLink>
-                </Authorized>
-                <NotAuthorized>
-                    <NavLink class="btn btn-primary rounded-pill" href="/register">Regístrate</NavLink>
-                </NotAuthorized>
-            </AuthorizeView>
         </div>
-    </div>
+    </nav>
 </header>
