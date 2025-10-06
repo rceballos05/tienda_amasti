@@ -1,10 +1,11 @@
 @using Microsoft.AspNetCore.Components.Routing
 
-<ul class="navbar-nav gap-3 @CssClass">
+<ul class="navbar-nav gap-2 gap-lg-4 align-items-lg-center @CssClass">
     @foreach (var item in MenuItems)
     {
         <li class="nav-item">
-            <NavLink class="nav-link text-uppercase fw-semibold small" href="@item.Href" Match="@item.Match">
+            <NavLink class="nav-link text-uppercase fw-semibold small text-dark-emphasis"
+                     ActiveClass="text-primary" href="@item.Href" Match="@item.Match">
                 @item.Text
             </NavLink>
         </li>
