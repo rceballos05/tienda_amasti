@@ -1,0 +1,93 @@
+@page "/products"
+@inject ProductService ProductService
+@inject CartService CartService
+
+<PageTitle>Catálogo</PageTitle>
+
+<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">Descubre nuestra colección</h2>
+        <p class="text-secondary mb-0">Filtra por categorías y encuentra tus esenciales de papelería.</p>
+    </div>
+    <div class="d-flex flex-column flex-md-row gap-2">
+        <input class="form-control" placeholder="Buscar productos" value="@searchTerm" @oninput="OnSearchChanged" />
+        <select class="form-select" value="@selectedCategory" @onchange="OnCategoryChanged">
+            <option value="Todos">Todas las categorías</option>
+            @foreach (var category in categories)
+            {
+                <option value="@category">@category</option>
+            }
+        </select>
+        <button class="btn btn-outline-secondary" @onclick="ClearFilters">Limpiar</button>
+    </div>
+</div>
+
+@if (filteredProducts.Count == 0)
+{
+    <div class="alert alert-info rounded-4">No encontramos productos con los filtros actuales.</div>
+}
+else
+{
+    <div class="product-grid">
+        @foreach (var product in filteredProducts)
+        {
+            <ProductCard Product="product" OnAddToCart="AddToCart" />
+        }
+    </div>
+}
+
+@code {
+    private string? searchTerm;
+    private string selectedCategory = "Todos";
+    private List<Product> filteredProducts = new();
+    private List<Product> allProducts = new();
+    private List<string> categories = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        allProducts = (await ProductService.GetAllAsync()).ToList();
+        categories = (await ProductService.GetCategoriesAsync()).ToList();
+        ApplyFilters();
+    }
+
+    private async Task AddToCart(Product product)
+    {
+        await CartService.AddToCartAsync(product);
+    }
+
+    private void OnSearchChanged(ChangeEventArgs args)
+    {
+        searchTerm = args.Value?.ToString();
+        ApplyFilters();
+    }
+
+    private void OnCategoryChanged(ChangeEventArgs args)
+    {
+        selectedCategory = args.Value?.ToString() ?? "Todos";
+        ApplyFilters();
+    }
+
+    private void ClearFilters()
+    {
+        searchTerm = string.Empty;
+        selectedCategory = "Todos";
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        IEnumerable<Product> query = allProducts;
+        if (!string.IsNullOrWhiteSpace(selectedCategory) && selectedCategory != "Todos")
+        {
+            query = query.Where(p => p.Category.Equals(selectedCategory, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            query = query.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                     p.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+        }
+
+        filteredProducts = query.ToList();
+    }
+}

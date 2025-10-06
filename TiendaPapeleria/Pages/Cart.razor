@@ -1,0 +1,66 @@
+@page "/cart"
+@inject CartService CartService
+
+<PageTitle>Carrito</PageTitle>
+
+<div class="d-flex flex-column flex-lg-row gap-4">
+    <div class="flex-grow-1">
+        <h2 class="fw-bold mb-3">Tu carrito</h2>
+        @if (items.Count == 0)
+        {
+            <div class="alert alert-info rounded-4">Tu carrito está vacío. Agrega productos desde el catálogo.</div>
+        }
+        else
+        {
+            @foreach (var item in items)
+            {
+                <CartItem Item="item" OnRemove="Remove" />
+            }
+        }
+    </div>
+    <div class="card rounded-4 shadow-sm p-4" style="min-width: 320px;">
+        <h5 class="fw-semibold mb-3">Resumen</h5>
+        <div class="d-flex justify-content-between mb-2">
+            <span class="text-secondary">Subtotal</span>
+            <span class="fw-semibold">@subtotal.ToString("C")</span>
+        </div>
+        <div class="d-flex justify-content-between mb-4">
+            <span class="text-secondary">Envío</span>
+            <span class="fw-semibold">Gratis</span>
+        </div>
+        <div class="d-flex justify-content-between mb-4">
+            <span class="fw-bold">Total</span>
+            <span class="fw-bold fs-5">@subtotal.ToString("C")</span>
+        </div>
+        <button class="btn btn-primary w-100 rounded-pill mb-2" disabled="@(items.Count == 0)">Proceder al pago</button>
+        <button class="btn btn-outline-secondary w-100 rounded-pill" @onclick="ClearCart" disabled="@(items.Count == 0)">Vaciar carrito</button>
+    </div>
+</div>
+
+@code {
+    private List<CartItem> items = new();
+    private decimal subtotal;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCartAsync();
+    }
+
+    private async Task LoadCartAsync()
+    {
+        items = (await CartService.GetCartAsync()).ToList();
+        subtotal = items.Sum(i => i.Total);
+    }
+
+    private async Task Remove(CartItem item)
+    {
+        await CartService.RemoveFromCartAsync(item.Product.Id);
+        await LoadCartAsync();
+    }
+
+    private async Task ClearCart()
+    {
+        await CartService.ClearAsync();
+        await LoadCartAsync();
+    }
+}

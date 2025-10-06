@@ -1,0 +1,19 @@
+<CascadingAuthenticationState>
+    <Router AppAssembly="typeof(Program).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
+                <NotAuthorized>
+                    <LayoutView Layout="typeof(MainLayout)">
+                        <p class="text-danger">No estás autorizado para ver esta página. Inicia sesión o regístrate.</p>
+                    </LayoutView>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="typeof(MainLayout)">
+                <p class="text-danger">Lo sentimos, no encontramos la página solicitada.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

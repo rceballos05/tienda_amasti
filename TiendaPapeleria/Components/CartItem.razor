@@ -1,0 +1,27 @@
+@using TiendaPapeleria.Models
+
+<div class="d-flex align-items-center justify-content-between border-bottom py-3">
+    <div class="d-flex align-items-center gap-3">
+        <img src="@Item.Product.ImageUrl" alt="@Item.Product.Name" class="rounded" style="width: 72px; height: 72px; object-fit: cover;">
+        <div>
+            <h6 class="mb-1">@Item.Product.Name</h6>
+            <small class="text-muted">Cantidad: @Item.Quantity</small>
+        </div>
+    </div>
+    <div class="text-end">
+        <p class="mb-1 fw-bold">@Item.Total.ToString("C")</p>
+        <button class="btn btn-outline-danger btn-sm rounded-pill" @onclick="Remove">
+            <i class="bi bi-x-circle"></i> Quitar
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public required CartItem Item { get; set; }
+
+    [Parameter]
+    public EventCallback<CartItem> OnRemove { get; set; }
+
+    private Task Remove() => OnRemove.InvokeAsync(Item);
+}

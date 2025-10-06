@@ -1,0 +1,91 @@
+@page "/login"
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager Navigation
+@inject ILogger<Login> Logger
+
+<PageTitle>Iniciar sesión</PageTitle>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-6">
+        <div class="bg-white rounded-4 shadow-sm p-5">
+            <h2 class="fw-bold mb-3">Bienvenido de nuevo</h2>
+            <p class="text-secondary mb-4">Ingresa tus credenciales para acceder a tu espacio creativo.</p>
+            <EditForm Model="loginModel" OnValidSubmit="HandleLoginAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label class="form-label">Correo electrónico</label>
+                    <InputText @bind-Value="loginModel.Email" class="form-control form-control-lg" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <InputText @bind-Value="loginModel.Password" type="password" class="form-control form-control-lg" />
+                </div>
+                <div class="form-check mb-3">
+                    <InputCheckbox @bind-Value="loginModel.RememberMe" class="form-check-input" id="remember" />
+                    <label class="form-check-label" for="remember">Recordarme</label>
+                </div>
+                <button class="btn btn-primary w-100 rounded-pill btn-lg" type="submit" disabled="@isBusy">
+                    @if (isBusy)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    Iniciar sesión
+                </button>
+            </EditForm>
+            <p class="text-center text-secondary mt-4 mb-0">
+                ¿No tienes cuenta? <a href="register">Crea una ahora</a>
+            </p>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger rounded-3 mt-4">@errorMessage</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private readonly LoginModel loginModel = new();
+    private bool isBusy;
+    private string? errorMessage;
+
+    private async Task HandleLoginAsync()
+    {
+        errorMessage = null;
+        isBusy = true;
+        try
+        {
+            var result = await SignInManager.PasswordSignInAsync(loginModel.Email!, loginModel.Password!, loginModel.RememberMe, lockoutOnFailure: false);
+            if (result.Succeeded)
+            {
+                Navigation.NavigateTo("/dashboard", true);
+            }
+            else
+            {
+                errorMessage = "Credenciales inválidas. Inténtalo nuevamente.";
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error al iniciar sesión");
+            errorMessage = "Ocurrió un error inesperado. Inténtalo más tarde.";
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+
+    private class LoginModel
+    {
+        [Required(ErrorMessage = "El correo es obligatorio")]
+        [EmailAddress(ErrorMessage = "Formato de correo inválido")]
+        public string? Email { get; set; }
+
+        [Required(ErrorMessage = "La contraseña es obligatoria")]
+        public string? Password { get; set; }
+
+        public bool RememberMe { get; set; }
+    }
+}
