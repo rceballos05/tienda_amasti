@@ -1,0 +1,115 @@
+@page "/register"
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager Navigation
+@inject ILogger<Register> Logger
+
+<PageTitle>Crear cuenta</PageTitle>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-6">
+        <div class="bg-white rounded-4 shadow-sm p-5">
+            <h2 class="fw-bold mb-3">Crea tu cuenta</h2>
+            <p class="text-secondary mb-4">Únete a nuestra comunidad y recibe beneficios exclusivos.</p>
+            <EditForm Model="registerModel" OnValidSubmit="HandleRegisterAsync">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+                <div class="mb-3">
+                    <label class="form-label">Nombre completo</label>
+                    <InputText @bind-Value="registerModel.FullName" class="form-control form-control-lg" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Correo electrónico</label>
+                    <InputText @bind-Value="registerModel.Email" class="form-control form-control-lg" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Contraseña</label>
+                    <InputText @bind-Value="registerModel.Password" type="password" class="form-control form-control-lg" />
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Confirmar contraseña</label>
+                    <InputText @bind-Value="registerModel.ConfirmPassword" type="password" class="form-control form-control-lg" />
+                </div>
+                <button class="btn btn-primary w-100 rounded-pill btn-lg" type="submit" disabled="@isBusy">
+                    @if (isBusy)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    Registrarme
+                </button>
+            </EditForm>
+            <p class="text-center text-secondary mt-4 mb-0">
+                ¿Ya tienes cuenta? <a href="login">Inicia sesión</a>
+            </p>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger rounded-3 mt-4">@errorMessage</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private readonly RegisterModel registerModel = new();
+    private bool isBusy;
+    private string? errorMessage;
+
+    private async Task HandleRegisterAsync()
+    {
+        errorMessage = null;
+        isBusy = true;
+        try
+        {
+            if (registerModel.Password != registerModel.ConfirmPassword)
+            {
+                errorMessage = "Las contraseñas no coinciden.";
+                return;
+            }
+
+            var user = new ApplicationUser
+            {
+                UserName = registerModel.Email,
+                Email = registerModel.Email,
+                FullName = registerModel.FullName
+            };
+
+            var result = await UserManager.CreateAsync(user, registerModel.Password!);
+            if (result.Succeeded)
+            {
+                await SignInManager.SignInAsync(user, isPersistent: true);
+                Navigation.NavigateTo("/dashboard", true);
+            }
+            else
+            {
+                errorMessage = string.Join(" ", result.Errors.Select(e => e.Description));
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error al registrar usuario");
+            errorMessage = "Ocurrió un error inesperado. Inténtalo más tarde.";
+        }
+        finally
+        {
+            isBusy = false;
+        }
+    }
+
+    private class RegisterModel
+    {
+        [Required(ErrorMessage = "El nombre es obligatorio")]
+        public string? FullName { get; set; }
+
+        [Required(ErrorMessage = "El correo es obligatorio")]
+        [EmailAddress(ErrorMessage = "Formato de correo inválido")]
+        public string? Email { get; set; }
+
+        [Required(ErrorMessage = "La contraseña es obligatoria")]
+        [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
+        public string? Password { get; set; }
+
+        [Required(ErrorMessage = "La confirmación es obligatoria")]
+        public string? ConfirmPassword { get; set; }
+    }
+}

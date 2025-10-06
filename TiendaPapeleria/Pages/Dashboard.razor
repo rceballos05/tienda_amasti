@@ -1,0 +1,106 @@
+@page "/dashboard"
+@attribute [Authorize]
+@inject ProductService ProductService
+@inject CartService CartService
+@inject NavigationManager Navigation
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Mi dashboard</PageTitle>
+
+@if (user is null)
+{
+    <p>Cargando información...</p>
+}
+else
+{
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="dashboard-card p-4">
+                <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+                    <div>
+                        <h2 class="fw-bold mb-1">Hola, @(string.IsNullOrWhiteSpace(user.FullName) ? user.Email : user.FullName)!</h2>
+                        <p class="text-secondary mb-0">Gestiona tu perfil y descubre productos curados para ti.</p>
+                    </div>
+                    <button class="btn btn-outline-primary rounded-pill" @onclick="() => Navigation.NavigateTo('/products')">Explorar catálogo</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="dashboard-card p-4 h-100">
+                <h5 class="fw-semibold mb-3">Mis datos</h5>
+                <p class="mb-1"><span class="text-muted">Correo:</span> @user.Email</p>
+                <p class="mb-1"><span class="text-muted">Nombre:</span> @(string.IsNullOrWhiteSpace(user.FullName) ? "Añade tu nombre" : user.FullName)</p>
+                <p class="mb-0"><span class="text-muted">Teléfono:</span> @(string.IsNullOrWhiteSpace(user.PhoneNumber) ? "Añade un teléfono" : user.PhoneNumber)</p>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="dashboard-card p-4 h-100">
+                <h5 class="fw-semibold mb-3">Resumen del carrito</h5>
+                @if (cartItems.Count == 0)
+                {
+                    <p class="text-secondary">Aún no tienes productos en tu carrito. ¡Explora el catálogo!</p>
+                }
+                else
+                {
+                    <ul class="list-unstyled mb-3">
+                        @foreach (var item in cartItems.Take(3))
+                        {
+                            <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                <span>@item.Product.Name</span>
+                                <span class="fw-semibold">@item.Total.ToString("C")</span>
+                            </li>
+                        }
+                    </ul>
+                    <p class="fw-semibold">Total aproximado: @cartItems.Sum(i => i.Total).ToString("C")</p>
+                    <button class="btn btn-primary rounded-pill" @onclick="() => Navigation.NavigateTo('/cart')">Ir al carrito</button>
+                }
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="dashboard-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <span class="badge bg-primary-subtle text-primary">Recomendados</span>
+                        <h4 class="fw-bold mb-0 mt-2">Productos seleccionados</h4>
+                    </div>
+                    <NavLink class="btn btn-outline-primary rounded-pill" href="/products">Ver catálogo completo</NavLink>
+                </div>
+                <div class="product-grid">
+                    @foreach (var product in featured)
+                    {
+                        <ProductCard Product="product" OnAddToCart="AddToCart" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private ApplicationUser? user;
+    private IReadOnlyList<Product> featured = new List<Product>();
+    private List<CartItem> cartItems = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var currentUser = await UserManager.GetUserAsync(authState.User);
+        if (currentUser is null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        user = currentUser;
+        featured = await ProductService.GetFeaturedAsync();
+        cartItems = (await CartService.GetCartAsync()).ToList();
+    }
+
+    private async Task AddToCart(Product product)
+    {
+        await CartService.AddToCartAsync(product);
+        cartItems = (await CartService.GetCartAsync()).ToList();
+        StateHasChanged();
+    }
+}

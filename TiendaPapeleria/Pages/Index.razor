@@ -1,0 +1,102 @@
+@page "/"
+@inject NavigationManager Navigation
+@inject ProductService ProductService
+@inject CartService CartService
+
+<PageTitle>Papelería Moderna</PageTitle>
+
+<section class="hero-section mb-5">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-12 col-lg-6">
+                <span class="badge bg-white text-primary mb-3">Papelería boutique para mentes creativas</span>
+                <h1 class="display-5 fw-bold mb-4">Organiza tus ideas con estilo</h1>
+                <p class="lead mb-4">Descubre nuestro catálogo curado de papelería premium, agendas, herramientas de escritura y accesorios de escritorio que elevan tu productividad.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <button class="btn btn-light text-primary rounded-pill" @onclick="() => Navigation.NavigateTo('register')">Crear cuenta</button>
+                    <button class="btn btn-outline-light rounded-pill" @onclick="() => Navigation.NavigateTo('products')">Ver catálogo</button>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <img src="https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=900&q=80" class="img-fluid rounded-4 shadow-lg" alt="Papelería creativa">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container mb-5">
+    <div class="row g-4">
+        <div class="col-12 col-lg-4">
+            <div class="card feature-card p-4 h-100">
+                <h4 class="fw-bold">Envíos a todo México</h4>
+                <p class="text-secondary">Entregas rápidas y seguras, con empaques sostenibles y seguimiento en tiempo real.</p>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card feature-card p-4 h-100">
+                <h4 class="fw-bold">Colecciones exclusivas</h4>
+                <p class="text-secondary">Ediciones especiales y colaboraciones con artistas para inspirarte cada día.</p>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="card feature-card p-4 h-100">
+                <h4 class="fw-bold">Asesoría personalizada</h4>
+                <p class="text-secondary">Te ayudamos a elegir la papelería ideal para tu proyecto, oficina o negocio.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container mb-5">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <span class="badge bg-primary-subtle text-primary">Destacados</span>
+            <h2 class="fw-bold mt-2">Productos más queridos</h2>
+        </div>
+        <NavLink class="btn btn-outline-primary rounded-pill" href="/products">Ver todos</NavLink>
+    </div>
+    <div class="product-grid">
+        @if (featuredProducts is null)
+        {
+            <p>Cargando productos...</p>
+        }
+        else
+        {
+            @foreach (var product in featuredProducts)
+            {
+                <ProductCard Product="product" OnAddToCart="AddToCart" />
+            }
+        }
+    </div>
+</section>
+
+<section class="container mb-5">
+    <div class="row align-items-center g-4">
+        <div class="col-12 col-lg-6">
+            <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80" class="img-fluid rounded-4" alt="Equipo creativo">
+        </div>
+        <div class="col-12 col-lg-6">
+            <span class="badge bg-primary-subtle text-primary mb-3">Experiencias únicas</span>
+            <h2 class="fw-bold mb-3">Suscríbete para recibir lanzamientos exclusivos</h2>
+            <p class="text-secondary">Únete a nuestra comunidad y sé el primero en conocer colecciones limitadas, talleres creativos y ofertas especiales.</p>
+            <div class="input-group">
+                <input type="email" class="form-control rounded-start-pill" placeholder="Ingresa tu correo">
+                <button class="btn btn-primary rounded-end-pill">Suscribirme</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private IReadOnlyList<Product>? featuredProducts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        featuredProducts = await ProductService.GetFeaturedAsync();
+    }
+
+    private async Task AddToCart(Product product)
+    {
+        await CartService.AddToCartAsync(product);
+    }
+}
