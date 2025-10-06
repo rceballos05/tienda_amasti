@@ -1,18 +1,9 @@
 @inherits LayoutComponentBase
 
-<div class="min-vh-100 d-flex flex-column">
+<div class="app-shell d-flex flex-column min-vh-100">
     <Header />
-    <div class="container flex-grow-1 py-4">
-        <div class="row">
-            <div class="col-12 col-lg-3 mb-4">
-                <NavMenu />
-            </div>
-            <div class="col-12 col-lg-9">
-                <main class="bg-white rounded-4 shadow-sm p-4">
-                    @Body
-                </main>
-            </div>
-        </div>
-    </div>
+    <main class="flex-grow-1">
+        @Body
+    </main>
     <Footer />
 </div>

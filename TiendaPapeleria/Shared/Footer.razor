@@ -1,25 +1,43 @@
-<footer class="footer-gradient py-5 mt-auto">
-    <div class="container d-flex flex-column flex-lg-row justify-content-between align-items-start gap-4">
-        <div>
-            <h5 class="fw-bold">Tienda Papelería</h5>
-            <p class="text-white-50 mb-0">Inspiramos tu creatividad con productos diseñados para profesionales, estudiantes y amantes de la papelería.</p>
+<footer class="footer-gradient text-white mt-auto">
+    <div class="container py-5">
+        <div class="row g-4">
+            <div class="col-12 col-lg-4">
+                <h5 class="fw-semibold">MiLogo Papelería</h5>
+                <p class="text-white-50 mb-0">Creamos herramientas bonitas y funcionales para que cada idea cobre vida. Inspírate con nuestra selección curada de papelería moderna.</p>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h6 class="fw-semibold mb-3">Explora</h6>
+                <ul class="list-unstyled text-white-50 d-grid gap-2">
+                    <li><NavLink class="link-light text-decoration-none opacity-75" href="/">Inicio</NavLink></li>
+                    <li><NavLink class="link-light text-decoration-none opacity-75" href="/agendas">Agendas</NavLink></li>
+                    <li><NavLink class="link-light text-decoration-none opacity-75" href="/stickers">Stickers</NavLink></li>
+                    <li><NavLink class="link-light text-decoration-none opacity-75" href="/conocenos">Conócenos</NavLink></li>
+                </ul>
+            </div>
+            <div class="col-6 col-lg-3">
+                <h6 class="fw-semibold mb-3">Atención</h6>
+                <ul class="list-unstyled text-white-50 d-grid gap-2">
+                    <li><a class="link-light text-decoration-none opacity-75" href="mailto:hola@milogo.mx">hola@milogo.mx</a></li>
+                    <li><a class="link-light text-decoration-none opacity-75" href="tel:+525512345678">+52 55 1234 5678</a></li>
+                    <li><span class="opacity-75">Lun - Vie 9:00 a 18:00 hrs</span></li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-3">
+                <h6 class="fw-semibold mb-3">Síguenos</h6>
+                <div class="d-flex align-items-center gap-3">
+                    <a class="social-pill" href="https://www.instagram.com" target="_blank" rel="noopener">IG</a>
+                    <a class="social-pill" href="https://www.facebook.com" target="_blank" rel="noopener">FB</a>
+                    <a class="social-pill" href="https://www.pinterest.com" target="_blank" rel="noopener">PT</a>
+                </div>
+            </div>
         </div>
-        <div>
-            <h6 class="fw-semibold">Enlaces</h6>
-            <ul class="list-unstyled text-white-50 mb-0">
-                <li><NavLink class="text-white-50 text-decoration-none" href="/">Inicio</NavLink></li>
-                <li><NavLink class="text-white-50 text-decoration-none" href="/products">Productos</NavLink></li>
-                <li><NavLink class="text-white-50 text-decoration-none" href="/cart">Carrito</NavLink></li>
-                <li><NavLink class="text-white-50 text-decoration-none" href="/dashboard">Dashboard</NavLink></li>
-            </ul>
+        <hr class="border-light border-opacity-25 my-4" />
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center gap-2 text-white-50 small">
+            <span>&copy; @DateTime.Now.Year MiLogo Papelería. Todos los derechos reservados.</span>
+            <div class="d-flex gap-3">
+                <a class="link-light text-decoration-none opacity-75" href="/aviso-privacidad">Aviso de privacidad</a>
+                <a class="link-light text-decoration-none opacity-75" href="/terminos">Términos y condiciones</a>
+            </div>
         </div>
-        <div>
-            <h6 class="fw-semibold">Contáctanos</h6>
-            <p class="text-white-50 mb-0">hola@tiendapapeleria.com</p>
-            <p class="text-white-50">+52 55 1234 5678</p>
-        </div>
-    </div>
-    <div class="container mt-4">
-        <small class="text-white-50">&copy; @DateTime.Now.Year Tienda Papelería. Todos los derechos reservados.</small>
     </div>
 </footer>

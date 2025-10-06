@@ -1,87 +1,70 @@
 @page "/"
-@inject NavigationManager Navigation
 @inject ProductService ProductService
 @inject CartService CartService
 
-<PageTitle>Papelería Moderna</PageTitle>
+<PageTitle>MiLogo Papelería</PageTitle>
 
-<section class="hero-section mb-5">
-    <div class="container">
-        <div class="row align-items-center g-5">
-            <div class="col-12 col-lg-6">
-                <span class="badge bg-white text-primary mb-3">Papelería boutique para mentes creativas</span>
-                <h1 class="display-5 fw-bold mb-4">Organiza tus ideas con estilo</h1>
-                <p class="lead mb-4">Descubre nuestro catálogo curado de papelería premium, agendas, herramientas de escritura y accesorios de escritorio que elevan tu productividad.</p>
-                <div class="d-flex flex-wrap gap-3">
-                    <button class="btn btn-light text-primary rounded-pill" @onclick='() => Navigation.NavigateTo("register")'>Crear cuenta</button>
-                    <button class="btn btn-outline-light rounded-pill" @onclick='() => Navigation.NavigateTo("products")'>Ver catálogo</button>
+<BannerHero
+    Tagline="nueva colección"
+    Title="Papelería bonita para ideas extraordinarias"
+    Subtitle="Agenda tus metas, personaliza tu estilo y transforma tu escritorio con piezas únicas creadas para mentes creativas."
+    BackgroundImage="https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=1600&q=80"
+    PrimaryActionText="Comprar ahora"
+    PrimaryActionLink="/products" />
+
+<ProductHighlights
+    Tagline="Experiencia milogo"
+    Title="Todo lo que necesitas para planear con estilo"
+    Subtitle="Seleccionamos materiales sostenibles, colores suaves y texturas sensoriales para que cada página cuente tu historia."
+    ActionText="Ver catálogo completo"
+    ActionLink="/products"
+    Items="@highlightItems" />
+
+<section class="container py-5">
+    <div class="row align-items-center g-5">
+        <div class="col-12 col-lg-6 order-2 order-lg-1">
+            <div class="d-flex flex-column gap-3">
+                <span class="badge bg-accent text-uppercase fw-semibold align-self-start">Lo más querido</span>
+                <h2 class="fw-bold display-6 text-dark mb-0">Productos destacados</h2>
+                <p class="text-secondary">Descubre nuestras piezas favoritas: agendas ilustradas, planners minimalistas y accesorios que combinan funcionalidad con diseño.</p>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6 order-1 order-lg-2">
+            <div class="product-grid">
+                @if (featuredProducts is null)
+                {
+                    <p class="text-secondary">Cargando productos...</p>
+                }
+                else
+                {
+                    @foreach (var product in featuredProducts)
+                    {
+                        <ProductCard Product="product" OnAddToCart="AddToCart" />
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="row g-5 align-items-center">
+        <div class="col-12 col-lg-6">
+            <div class="story-card p-4 p-lg-5 rounded-4 h-100">
+                <span class="badge bg-primary-subtle text-primary text-uppercase fw-semibold mb-3">Conócenos</span>
+                <h3 class="fw-bold mb-3">Diseñamos papelería consciente en ediciones limitadas</h3>
+                <p class="text-secondary mb-4">Somos un equipo de diseñadoras que ama plasmar momentos especiales en papel. Trabajamos con proveedores locales y procesos responsables para ofrecerte piezas que se sienten tan bien como se ven.</p>
+                <NavLink class="btn btn-primary rounded-pill px-4" href="/conocenos">Nuestra historia</NavLink>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="subscribe-card rounded-4 p-4 p-lg-5">
+                <h4 class="fw-bold mb-3">Suscríbete a la newsletter</h4>
+                <p class="text-secondary mb-4">Recibe lanzamientos exclusivos, talleres creativos y descuentos especiales directamente en tu correo.</p>
+                <div class="input-group input-group-lg">
+                    <input type="email" class="form-control rounded-start-pill" placeholder="Tu correo electrónico" />
+                    <button class="btn btn-accent rounded-end-pill px-4">Suscribirme</button>
                 </div>
-            </div>
-            <div class="col-12 col-lg-6">
-                <img src="https://images.unsplash.com/photo-1526498460520-4c246339dccb?auto=format&fit=crop&w=900&q=80" class="img-fluid rounded-4 shadow-lg" alt="Papelería creativa">
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="container mb-5">
-    <div class="row g-4">
-        <div class="col-12 col-lg-4">
-            <div class="card feature-card p-4 h-100">
-                <h4 class="fw-bold">Envíos a todo México</h4>
-                <p class="text-secondary">Entregas rápidas y seguras, con empaques sostenibles y seguimiento en tiempo real.</p>
-            </div>
-        </div>
-        <div class="col-12 col-lg-4">
-            <div class="card feature-card p-4 h-100">
-                <h4 class="fw-bold">Colecciones exclusivas</h4>
-                <p class="text-secondary">Ediciones especiales y colaboraciones con artistas para inspirarte cada día.</p>
-            </div>
-        </div>
-        <div class="col-12 col-lg-4">
-            <div class="card feature-card p-4 h-100">
-                <h4 class="fw-bold">Asesoría personalizada</h4>
-                <p class="text-secondary">Te ayudamos a elegir la papelería ideal para tu proyecto, oficina o negocio.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="container mb-5">
-    <div class="d-flex align-items-center justify-content-between mb-4">
-        <div>
-            <span class="badge bg-primary-subtle text-primary">Destacados</span>
-            <h2 class="fw-bold mt-2">Productos más queridos</h2>
-        </div>
-        <NavLink class="btn btn-outline-primary rounded-pill" href="/products">Ver todos</NavLink>
-    </div>
-    <div class="product-grid">
-        @if (featuredProducts is null)
-        {
-            <p>Cargando productos...</p>
-        }
-        else
-        {
-            @foreach (var product in featuredProducts)
-            {
-                <ProductCard Product="product" OnAddToCart="AddToCart" />
-            }
-        }
-    </div>
-</section>
-
-<section class="container mb-5">
-    <div class="row align-items-center g-4">
-        <div class="col-12 col-lg-6">
-            <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80" class="img-fluid rounded-4" alt="Equipo creativo">
-        </div>
-        <div class="col-12 col-lg-6">
-            <span class="badge bg-primary-subtle text-primary mb-3">Experiencias únicas</span>
-            <h2 class="fw-bold mb-3">Suscríbete para recibir lanzamientos exclusivos</h2>
-            <p class="text-secondary">Únete a nuestra comunidad y sé el primero en conocer colecciones limitadas, talleres creativos y ofertas especiales.</p>
-            <div class="input-group">
-                <input type="email" class="form-control rounded-start-pill" placeholder="Ingresa tu correo">
-                <button class="btn btn-primary rounded-end-pill">Suscribirme</button>
             </div>
         </div>
     </div>
@@ -89,6 +72,13 @@
 
 @code {
     private IReadOnlyList<Product>? featuredProducts;
+
+    private readonly IReadOnlyList<ProductHighlights.HighlightItem> highlightItems = new List<ProductHighlights.HighlightItem>
+    {
+        new("Personaliza tu tapa", "Elige paletas de color, tipografías y grabados únicos para tu agenda.", "✨"),
+        new("Materiales sustentables", "Papel libre de ácido y empaques reciclables para un impacto positivo.", "🌱"),
+        new("Entrega express", "Recibe tu pedido en menos de 72 horas en las principales ciudades.", "🚚")
+    };
 
     protected override async Task OnInitializedAsync()
     {

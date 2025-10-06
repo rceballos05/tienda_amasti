@@ -1,0 +1,41 @@
+<section class="container py-5">
+    <div class="row justify-content-between align-items-end mb-4 g-3">
+        <div class="col-12 col-lg-8">
+            <span class="badge bg-primary-subtle text-primary text-uppercase fw-semibold mb-3">@Tagline</span>
+            <h2 class="fw-bold display-6 text-dark mb-2">@Title</h2>
+            <p class="text-secondary mb-0">@Subtitle</p>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(ActionText))
+        {
+            <div class="col-12 col-lg-auto text-lg-end">
+                <NavLink class="btn btn-outline-primary rounded-pill px-4" href="@ActionLink">@ActionText</NavLink>
+            </div>
+        }
+    </div>
+    <div class="row g-4">
+        @foreach (var item in Items)
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="highlight-card h-100 p-4 rounded-4 shadow-sm">
+                    @if (!string.IsNullOrWhiteSpace(item.Icon))
+                    {
+                        <div class="icon-circle mb-3">@item.Icon</div>
+                    }
+                    <h5 class="fw-semibold mb-2">@item.Title</h5>
+                    <p class="text-secondary mb-0">@item.Description</p>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@code {
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public string Subtitle { get; set; } = string.Empty;
+    [Parameter] public string Tagline { get; set; } = string.Empty;
+    [Parameter] public string? ActionText { get; set; }
+    [Parameter] public string ActionLink { get; set; } = string.Empty;
+    [Parameter] public IReadOnlyList<HighlightItem> Items { get; set; } = Array.Empty<HighlightItem>();
+
+    public record HighlightItem(string Title, string Description, string Icon = "");
+}
