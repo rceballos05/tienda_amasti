@@ -38,7 +38,7 @@
 </div>
 
 @code {
-    private List<CartItem> items = new();
+    private List<TiendaPapeleria.Models.CartItem> items = new();
     private decimal subtotal;
 
     protected override async Task OnInitializedAsync()
@@ -52,7 +52,7 @@
         subtotal = items.Sum(i => i.Total);
     }
 
-    private async Task Remove(CartItem item)
+    private async Task Remove(TiendaPapeleria.Models.CartItem item)
     {
         await CartService.RemoveFromCartAsync(item.Product.Id);
         await LoadCartAsync();

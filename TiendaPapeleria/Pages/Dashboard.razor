@@ -22,7 +22,7 @@ else
                         <h2 class="fw-bold mb-1">Hola, @(string.IsNullOrWhiteSpace(user.FullName) ? user.Email : user.FullName)!</h2>
                         <p class="text-secondary mb-0">Gestiona tu perfil y descubre productos curados para ti.</p>
                     </div>
-                    <button class="btn btn-outline-primary rounded-pill" @onclick="() => Navigation.NavigateTo('/products')">Explorar catálogo</button>
+                    <button class="btn btn-outline-primary rounded-pill" @onclick='() => Navigation.NavigateTo("/products")'>>Explorar catálogo</button>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@ else
                         }
                     </ul>
                     <p class="fw-semibold">Total aproximado: @cartItems.Sum(i => i.Total).ToString("C")</p>
-                    <button class="btn btn-primary rounded-pill" @onclick="() => Navigation.NavigateTo('/cart')">Ir al carrito</button>
+                    <button class="btn btn-primary rounded-pill" @onclick='() => Navigation.NavigateTo("/cart")'>>Ir al carrito</button>
                 }
             </div>
         </div>
@@ -80,7 +80,7 @@ else
 @code {
     private ApplicationUser? user;
     private IReadOnlyList<Product> featured = new List<Product>();
-    private List<CartItem> cartItems = new();
+    private List<TiendaPapeleria.Models.CartItem> cartItems = new();
 
     protected override async Task OnInitializedAsync()
     {

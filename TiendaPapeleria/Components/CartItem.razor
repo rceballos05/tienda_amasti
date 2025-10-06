@@ -18,10 +18,10 @@
 
 @code {
     [Parameter]
-    public required CartItem Item { get; set; }
+    public required TiendaPapeleria.Models.CartItem Item { get; set; }
 
     [Parameter]
-    public EventCallback<CartItem> OnRemove { get; set; }
+    public EventCallback<TiendaPapeleria.Models.CartItem> OnRemove { get; set; }
 
     private Task Remove() => OnRemove.InvokeAsync(Item);
 }
